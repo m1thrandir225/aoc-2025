@@ -43,7 +43,7 @@ func part2(input string) any {
 			case 'R':
 				dial++
 			}
-			if dial%100 == 0 {
+			if dial%100 == 0 { // check in every dial computation if it resets so we increase the counter
 				passwordPointer++
 			}
 		}
