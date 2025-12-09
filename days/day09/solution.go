@@ -3,53 +3,28 @@ package main
 import (
 	"strconv"
 	"strings"
+
+	"github.com/m1thrandir225/aoc_2025/util"
 )
 
-type Tile [2]int
-
-func abs(n int) int {
-	if n < 0 {
-		return -n
-	}
-	return n
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func (t *Tile) Area(corner *Tile) int {
-	w := abs(t[0]-(*corner)[0]) + 1
-	h := abs(t[1]-(*corner)[1]) + 1
-	return w * h
-}
+type tile [2]int
 
 func part1(input string) any {
 	lines := strings.Split(input, "\n")
-	tiles := make([]*Tile, len(lines))
+	tiles := make([]tile, len(lines))
 	for i, line := range strings.Split(input, "\n") {
 		line = strings.TrimSpace(line)
 
 		ints := strings.Split(line, ",")
-		x1, _ := strconv.Atoi(strings.TrimSpace(ints[0]))
-		x2, _ := strconv.Atoi(strings.TrimSpace(ints[1]))
-		tiles[i] = &Tile{x1, x2}
+		x, _ := strconv.Atoi(strings.TrimSpace(ints[0]))
+		y, _ := strconv.Atoi(strings.TrimSpace(ints[1]))
+		tiles[i] = tile{x, y}
 	}
 
 	largest := 0
 	for i := range tiles {
 		for j := i + 1; j < len(tiles); j++ {
-			largest = max(largest, tiles[i].Area(tiles[j]))
+			largest = max(largest, util.Area(tiles[i], tiles[j]))
 		}
 	}
 
@@ -59,14 +34,14 @@ func part1(input string) any {
 func part2(input string) any {
 	lines := strings.Split(input, "\n")
 
-	tiles := make([]Tile, len(lines))
+	tiles := make([]tile, len(lines))
 	for i, line := range lines {
 		line = strings.TrimSpace(line)
 
 		ints := strings.Split(line, ",")
-		x1, _ := strconv.Atoi(strings.TrimSpace(ints[0]))
-		x2, _ := strconv.Atoi(strings.TrimSpace(ints[1]))
-		tiles[i] = Tile{x1, x2}
+		x, _ := strconv.Atoi(strings.TrimSpace(ints[0]))
+		y, _ := strconv.Atoi(strings.TrimSpace(ints[1]))
+		tiles[i] = tile{x, y}
 	}
 
 	ans := 0
@@ -78,9 +53,7 @@ func part2(input string) any {
 			a := tiles[i]
 			b := tiles[j]
 
-			w := abs(a[0]-b[0]) + 1
-			h := abs(a[1]-b[1]) + 1
-			area := w * h
+			area := util.Area(a, b)
 
 			if area <= ans {
 				continue

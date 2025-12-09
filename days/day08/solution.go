@@ -8,11 +8,11 @@ import (
 	"github.com/m1thrandir225/aoc_2025/util"
 )
 
-type Point struct {
+type point struct {
 	x, y, z int
 }
 
-func EuclidianDistance(p1, p2 Point) float64 {
+func euclidianDistance(p1, p2 point) float64 {
 	x := math.Pow(float64(p1.x)-float64(p2.x), 2)
 	y := math.Pow(float64(p1.y)-float64(p2.y), 2)
 	z := math.Pow(float64(p1.z)-float64(p2.z), 2)
@@ -21,13 +21,13 @@ func EuclidianDistance(p1, p2 Point) float64 {
 }
 
 func part1(input string) any {
-	points := make([]Point, 0, len(input))
+	points := make([]point, 0, len(input))
 
 	for _, line := range strings.Split(input, "\n") {
 		splits := strings.Split(line, ",")
 
 		intSplits := util.StrToIntArr(splits)
-		poit := Point{
+		poit := point{
 			x: intSplits[0],
 			y: intSplits[1],
 			z: intSplits[2],
@@ -35,22 +35,22 @@ func part1(input string) any {
 		points = append(points, poit)
 	}
 
-	pointPairs := [][2]Point{}
-	pointDistances := map[[2]Point]float64{}
+	pointPairs := [][2]point{}
+	pointDistances := map[[2]point]float64{}
 
 	for i := 0; i < len(points); i++ {
 		for j := 0; j < i; j++ {
-			pair := [2]Point{points[i], points[j]}
-			pointDistances[pair] = EuclidianDistance(points[i], points[j])
+			pair := [2]point{points[i], points[j]}
+			pointDistances[pair] = euclidianDistance(points[i], points[j])
 			pointPairs = append(pointPairs, pair)
 		}
 	}
 
-	slices.SortFunc(pointPairs, func(a, b [2]Point) int {
-		return int(EuclidianDistance(a[0], a[1])) - int(EuclidianDistance(b[0], b[1]))
+	slices.SortFunc(pointPairs, func(a, b [2]point) int {
+		return int(euclidianDistance(a[0], a[1])) - int(euclidianDistance(b[0], b[1]))
 	})
 
-	pointConnections := make(map[Point][]Point)
+	pointConnections := make(map[point][]point)
 
 	for i := range 1000 {
 		pair := pointPairs[i]
@@ -69,14 +69,14 @@ func part1(input string) any {
 	return res
 }
 
-func groups(poss []Point, connections map[Point][]Point) []int {
+func groups(poss []point, connections map[point][]point) []int {
 	posSet := util.SetFrom(poss)
 	var groupSizes []int
-	seen := util.Set[Point]{}
+	seen := util.Set[point]{}
 
 	for len(posSet) > 0 {
 		groupSize := 0
-		q := util.NewQueue[Point]()
+		q := util.NewQueue[point]()
 		q.Push(posSet.Slice()[0])
 		for pos := range q.Seq {
 			if seen.Contains(pos) {
@@ -96,13 +96,13 @@ func groups(poss []Point, connections map[Point][]Point) []int {
 }
 
 func part2(input string) any {
-	points := make([]Point, 0, len(input))
+	points := make([]point, 0, len(input))
 
 	for _, line := range strings.Split(input, "\n") {
 		splits := strings.Split(line, ",")
 
 		intSplits := util.StrToIntArr(splits)
-		poit := Point{
+		poit := point{
 			x: intSplits[0],
 			y: intSplits[1],
 			z: intSplits[2],
@@ -110,22 +110,22 @@ func part2(input string) any {
 		points = append(points, poit)
 	}
 
-	pointPairs := [][2]Point{}
-	pointDistances := map[[2]Point]float64{}
+	pointPairs := [][2]point{}
+	pointDistances := map[[2]point]float64{}
 
 	for i := 0; i < len(points); i++ {
 		for j := 0; j < i; j++ {
-			pair := [2]Point{points[i], points[j]}
-			pointDistances[pair] = EuclidianDistance(points[i], points[j])
+			pair := [2]point{points[i], points[j]}
+			pointDistances[pair] = euclidianDistance(points[i], points[j])
 			pointPairs = append(pointPairs, pair)
 		}
 	}
 
-	slices.SortFunc(pointPairs, func(a, b [2]Point) int {
-		return int(EuclidianDistance(a[0], a[1])) - int(EuclidianDistance(b[0], b[1]))
+	slices.SortFunc(pointPairs, func(a, b [2]point) int {
+		return int(euclidianDistance(a[0], a[1])) - int(euclidianDistance(b[0], b[1]))
 	})
 
-	pointConnections := make(map[Point][]Point)
+	pointConnections := make(map[point][]point)
 
 	for _, pair := range pointPairs {
 		pointConnections[pair[0]] = append(pointConnections[pair[0]], pair[1])
