@@ -1,8 +1,13 @@
 package main
 
 import (
+	"math"
+	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/draffensperger/golp"
+	"github.com/m1thrandir225/aoc_2025/util"
 )
 
 func part1(input string) any {
@@ -73,9 +78,48 @@ func part1(input string) any {
 }
 
 func part2(input string) any {
-	for _, line := range strings.Split(input, "\n") {
-		_ = line
-	}
+	lines := strings.Split(input, "\n")
 
-	return nil
+	total := 0
+	for _, line := range lines {
+		parts := strings.Split(line, " ")
+		targetStr := parts[len(parts)-1]
+		buttonsStrs := parts[1 : len(parts)-1]
+
+		targets := util.StrToIntArr(targetStr)
+		var affects [][]int
+		for _, buttonStr := range buttonsStrs {
+			affects = append(affects, util.StrToIntArr(buttonStr))
+		}
+
+		lp := golp.NewLP(0, len(buttonsStrs))
+		obj := make([]float64, len(buttonsStrs))
+		for j := range buttonsStrs {
+			obj[j] = 1.0
+			lp.SetInt(j, true)
+		}
+		lp.SetObjFn(obj)
+
+		for i := range len(targets) {
+			row := make([]float64, len(buttonsStrs))
+			hasConstraint := false
+			for j := range len(buttonsStrs) {
+				if slices.Contains(affects[j], i) {
+					row[j] = 1
+					hasConstraint = true
+				}
+			}
+			if hasConstraint {
+				lp.AddConstraint(row, golp.EQ, float64(targets[i]))
+			}
+		}
+
+		lp.Solve()
+
+		vars := lp.Variables()
+		for j := range buttonsStrs {
+			total += int(math.Round(vars[j]))
+		}
+	}
+	return total
 }

@@ -26,7 +26,7 @@ func part1(input string) any {
 	for _, line := range strings.Split(input, "\n") {
 		splits := strings.Split(line, ",")
 
-		intSplits := util.StrToIntArr(splits)
+		intSplits := util.StrArrToIntArr(splits)
 		poit := point{
 			x: intSplits[0],
 			y: intSplits[1],
@@ -101,7 +101,7 @@ func part2(input string) any {
 	for _, line := range strings.Split(input, "\n") {
 		splits := strings.Split(line, ",")
 
-		intSplits := util.StrToIntArr(splits)
+		intSplits := util.StrArrToIntArr(splits)
 		poit := point{
 			x: intSplits[0],
 			y: intSplits[1],
